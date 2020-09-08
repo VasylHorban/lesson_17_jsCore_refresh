@@ -1,0 +1,96 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    font-family: monospace
+}
+.dark-container{
+    background: #fff;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.modal-window{
+    background: #fff;
+    width: 400px;
+    padding: 20px;
+    position: absolute;
+    top: 5%;
+    z-index: 99;
+    border: 1px solid red;
+    margin: 0 auto;
+    text-align: center;
+    left: 50%;
+    margin-left: -220px;
+    display: none;
+    border-radius: 5px;
+}
+.modal-window .btn{
+    border-radius: 5px;
+}
+
+.timer{
+    text-align: center;
+    margin-top: 30px;
+    font-size: 60px;
+}
+.button-container{
+    text-align: center;
+    width: 300px;
+    display: flex;
+    justify-content: space-around;
+    margin: 40px auto 20px auto;
+}
+
+.btn{
+    color : #fff;
+    padding: 5px 20px;
+    background: #ea5454;
+    border : none;
+    cursor: pointer;
+    transition: all ease .3s;
+}
+
+.btn:hover{
+    background: #e53636
+}
+.btn:focus{
+    outline: none;
+}
+.btn:active{
+    background: #fdabab
+}
+
+.puzzle-container{
+/*    border: 1px solid red;*/
+    width: 75%;
+    min-width: 850px;
+    min-height: 400px;
+    display: flex;
+    justify-content: space-around;
+    margin: 0 auto;
+}
+.box{
+    width: 400px;
+    height: 400px;
+    background: #f7f7f7;
+    box-shadow: inset 0px 1px 15px 0px rgba(0,0,0,0.75);
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.puzzl{
+    border: 1px solid #d1cbcb;
+    width: 100px;
+    height: 100px;
+    background-image: url('minion.png');
+    background-size: auto
+}
+
