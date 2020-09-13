@@ -1,8 +1,6 @@
 $(document).ready(function () {
     const puzzls = []
 
-
-
     getPuzzls()
     shuffle(puzzls)
     showPuzzl(puzzls)
@@ -11,14 +9,33 @@ $(document).ready(function () {
         connectWith: '.place',
         containment: '.puzzle-container',
         forcePlaceholderSize: true,
-        over : function(event, ui){
-            console.log(event.target)
-            if(event.target.children.length > 1){
-                $(event.target).remov
-//                ui.sortable('disable')
-            } else{
-                console.log('пусто')
-            }  
+        //        cancel : '.no_sort',
+//        change: function (event, ui) {
+//            $('.place').each(function (i, elem) {
+//                console.log(elem.children.length)
+//                if (!elem.children.length > 0) {
+//                    $(elem).removeClass('no_sort')
+//                }
+//            })
+//        },
+        beforeStop: function (event, ui) {
+            
+                        console.log(event.toElement.parentElement.getAttribute('data-number'))
+            console.log(event.toElement.parentElement)
+            if (event.toElement.parentElement.classList.contains('no_sort')) {
+                let oldPuzzl = event.toElement.parentElement.children[0]
+                let index = findNear($('.right-box'), +event.toElement.parentElement.getAttribute('data-number'))
+                $('.place').eq(index).addClass('no_sort')
+                document.querySelector('.right-box').children[index].append(oldPuzzl)
+                console.log(index)
+                
+            }
+            event.target.classList.remove('no_sort')
+            event.toElement.parentElement.classList.add('no_sort')
+//            console.log('ooo')
+        },
+        stop: function (event, i){
+//            console.log('yoyu')
         }
     })
 
@@ -28,6 +45,23 @@ $(document).ready(function () {
         })
     }
 
+    function findNear(domArr, i) {
+        let num = 17;
+        let pos;
+        domArr.children().each(function (index, elem) {
+//            console.log(elem.classList.contains('no_sort'))
+            if (!elem.classList.contains('no_sort')) {
+                let temp = Math.abs(i - index);
+                if (temp < num && temp != 0) {
+                    num = temp
+                    pos = index;
+//                    console.log(num)
+                }
+            }
+
+        })
+        return pos;
+    }
 
     function shuffle(array) {
         array.sort(() => Math.random() - 0.5);
@@ -60,12 +94,5 @@ $(document).ready(function () {
             top += 100
         }
     }
-    console.log(puzzls)
-
-
-
-
-
-
-
+//    console.log(puzzls)
 })
