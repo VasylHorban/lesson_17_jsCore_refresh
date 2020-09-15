@@ -20,22 +20,36 @@ body{
 
 .modal-window{
     background: #fff;
-    width: 400px;
+    width: 450px;
     padding: 20px;
     position: absolute;
     top: 5%;
     z-index: 99;
-    border: 1px solid red;
     margin: 0 auto;
     text-align: center;
     left: 50%;
     margin-left: -220px;
     display: none;
     border-radius: 5px;
+    box-shadow: 4px 0px 22px -8px rgba(0,0,0,0.75);
+
+}
+.modal-window h1{
+    margin-bottom: 15px;
 }
 .modal-window .btn{
     border-radius: 5px;
 }
+.modal-window .close{
+    background: #4fe24f
+}
+.modal-window .close:hover{
+    background: #3aaa3a
+}
+.modal-window .close:active{
+    background: #8aed8a
+}
+
 
 .timer{
     text-align: center;
@@ -77,6 +91,7 @@ body{
     display: flex;
     justify-content: space-around;
     margin: 0 auto;
+    overflow: hidden
 }
 .box{
     width: 400px;
@@ -86,6 +101,7 @@ body{
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
+
 }
 .left-place{
     width: 100px;

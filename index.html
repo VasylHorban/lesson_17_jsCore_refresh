@@ -10,14 +10,24 @@
 <body>
     <div class="dark-container"></div>
     <div class="modal-window">
-        <h1></h1>
-        <span>00:00</span>
-        <div></div>
+        <div class="ask-window">
+            <h1>You still have time, are you sure? <span id="window-timer">00:00</span></h1>
+            <button class='btn close'>close</button>
+            <button class='btn check'>check</button>
+        </div>
+        <div class="win-window">
+            <h1>Woohoo, well done, you did it!</h1>
+            <button class="btn close">close</button>
+        </div>
+        <div class="lose-window">
+            <h1>It's a pity, but you lost</h1>
+            <button class="btn close">close</button>
+        </div>
     </div>
     <div class="timer"><span>01</span>:<span>00</span></div>
     <div class="button-container">
         <button class='btn' id='start'>Start</button>
-        <button class='btn' id='check'>Check</button>
+        <button class='btn' id='check' disabled>Check</button>
         <button class='btn' id='new-game'>New game</button>
     </div>
 

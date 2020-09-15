@@ -1,32 +1,64 @@
 $(document).ready(function () {
     let puzzls = []
     const winComb = [12, 8, 4, 15, 11, 7, 2, 14, 10, 6, 13, 9, 5]
-    let showTime = false;
     generPlace()
     getPuzzls()
     puzzls = shuffle(puzzls)
     showPuzzl(puzzls)
     sortable();
-    
-    $('#new-game').click(function(){
+
+    $('#new-game').click(function () {
         puzzls = []
         generPlace()
         getPuzzls(puzzls)
-        shuffle(puzzls)        
+        shuffle(puzzls)
         showPuzzl(puzzls)
         sortable()
         timerModule.refresh();
+        $('.timer').html('<span>01</span>:<span>00</span>')
+        $('#start').removeAttr('disabled')
+        $('.puzzl').on('mousedown', function () {
+            startGame()
+        })
     })
     $('#check').click(function () {
-        showTime = true
-        checkResult()
-        windowModule.innerText(0)
+        windowModule.typeOfWindow(0)
         windowModule.show()
-        
+
     })
-    
-    
-    function checkResult(){
+
+    $('#start').click(function () {
+        startGame()
+    })
+
+    $('.puzzl').on('mousedown', function () {
+        startGame()
+    })
+
+    function startGame() {
+        timerModule.run();
+        $('#check').removeAttr('disabled')
+        $('#start').attr('disabled', true)
+        $('.puzzl').off('mousedown')
+        $('#new-game').attr('disabled', true)
+
+    }
+
+    function gameOver() {
+        timerModule.stop()
+        $('#check').attr('disabled', true)
+        $('#new-game').removeAttr('disabled')
+        if (checkResult()) {
+            windowModule.typeOfWindow(1)
+        } else {
+            windowModule.typeOfWindow(2)
+        }
+        windowModule.show();
+        $('.left-place,.place').sortable('disable')
+    }
+
+
+    function checkResult() {
         let win = true;
         let i = 0;
         $('.place').each(function (index, elem) {
@@ -40,140 +72,153 @@ $(document).ready(function () {
                 let pv = $(elem.children[0]).attr('data-position')
                 if (pv != winComb[i]) {
                     win = false
-                    
+
                 }
                 i++
             }
         })
         return win
     }
-    
-    
-    
-    const windowModule = (function(){
+
+
+
+    const windowModule = (function () {
         let outHtml;
         let bg;
-        const innterHtml = [
-            ["You still have time, are you sure?", "<button class='btn close'>close</button><button class='btn check'>check</button>"]
-        ] 
-        
-        function html(){
-            outHtml = $('.modal-window')
+
+        function html() {
+            outHtml = $('.modal-window').children();
             bg = $('.dark-container')
-        }
-        function show(){
-            $(outHtml).show();
-            $(bg).css({
-                zIndex : 50,
-                backgroundColor : 'rgba(60, 51, 51, 0.65)'
+            $('.close').click(function () {
+                hide()
+            })
+            $('.check').click(function () {
+                gameOver();
             })
         }
-        function hide(){
-            $(outHtml).hide();
+
+        function show() {
+            $(outHtml.parent()).show();
             $(bg).css({
-                zIndex : -1,
-                backgroundColor : '#fff'
+                zIndex: 50,
+                backgroundColor: 'rgba(60, 51, 51, 0.65)'
             })
         }
-        function innerText(i, time){
-            $(outHtml).children().eq(0).html(innterHtml[i][0])
-            
-            if(time != undefined){
-                $(outHtml).children().eq(1).html(time)
-            }
-            $(outHtml).children().eq(2).html(innterHtml[i][1])
+
+        function hide() {
+            $(outHtml.parent()).hide();
+            $(bg).css({
+                zIndex: -1,
+                backgroundColor: '#fff'
+            })
         }
-        function init(){
+
+        function typeOfWindow(i) {
+            $(outHtml).each(function (index, elem) {
+                $(elem).hide();
+            })
+            $(outHtml).eq(i).show();
+
+
+        }
+
+        function init() {
             html()
         }
         return {
-            init : init,
-            hide : hide,
-            innerText : innerText,
-            show : show,
-            window : outHtml
+            init: init,
+            hide: hide,
+            typeOfWindow: typeOfWindow,
+            show: show,
+            window: outHtml
         }
-        
+
     })();
-    
+
     windowModule.init();
-    const timerModule = (function(){
+
+    const timerModule = (function () {
         let outHtml;
         let mm = 1;
         let ss = 0;
         let timer;
-        function html(){
+
+        function html() {
             outHtml = $('.timer');
-            $('#start').click(function(){
-                run()
-            })
         }
-        function stop(){
+
+        function stop() {
             clearTimeout(timer)
         }
-        function refresh(){
+
+        function refresh() {
             mm = 1;
             ss = 0;
             clearTimeout(timer)
             $(outHtml).eq(0).text('01')
             $(outHtml).eq(1).text('00')
         }
-        function run(){
+
+        function run() {
             let out = [];
             ss = ss - 1
-            if(ss == -1){
+            if (ss == -1) {
                 ss = 59
                 mm = mm - 1
             }
-            if(ss < 10) out.push(`0${ss}`)
+            if (ss < 10) out.push(`0${ss}`)
             else out.push(ss)
-            if(mm < 10) out.push(`0${mm}`)
-            else out. push(mm)
-            
+            if (mm < 10) out.push(`0${mm}`)
+            else out.push(mm)
+
             $(outHtml).html(`<span>${out[1]}</span>:<span>${out[0]}</span>`)
-            if(showTime){
-                windowModule.innerText(0, `<span>${out[1]}</span>:<span>${out[0]}</span>`)
+
+            $('#window-timer').html(`<span>${out[1]}</span>:<span>${out[0]}</span>`)
+            if (mm >= 0 && ss >= 1) {
+                timer = setTimeout(run, 1000)
+            } else {
+                gameOver();
             }
-            if(mm >= 0 && ss >= 1){
-               timer = setTimeout(run, 1000)
-            }
-            
+
         }
-        function init(){
+
+        function init() {
             html();
         }
-        
+
         return {
             init: init,
-            run : run,
-            refresh : refresh
+            run: run,
+            refresh: refresh,
+            stop: stop
         }
     })();
     timerModule.init()
-    $('#start').click(function(){
-        
+    $('#start').click(function () {
+
     })
-    
-    function sortable(){    $('.left-place,.place').sortable({
-        connectWith: '.place',
-        containment: '.puzzle-container',
-        forcePlaceholderSize: true,
-        beforeStop: function (event, ui) {
 
-            console.log(event.toElement.parentElement.getAttribute('data-number'))
-            console.log(event.toElement.parentElement)
-            if (event.toElement.parentElement.classList.contains('no_sort')) {
-                let oldPuzzl = event.toElement.parentElement.children[0]
-                let index = findNear($('.right-box'), +event.toElement.parentElement.getAttribute('data-number'))
-                $('.place').eq(index).addClass('no_sort')
-                console.log($('.place').eq(index))
-                document.querySelector('.right-box').children[index].append(oldPuzzl)
+    function sortable() {
+        $('.left-place,.place').sortable({
+            connectWith: '.place',
+            containment: '.puzzle-container',
+            forcePlaceholderSize: true,
+            beforeStop: function (event, ui) {
 
+                console.log(event.toElement.parentElement.getAttribute('data-number'))
+                console.log(event.toElement.parentElement)
+                if (event.toElement.parentElement.classList.contains('no_sort')) {
+                    let oldPuzzl = event.toElement.parentElement.children[0]
+                    let index = findNear($('.right-box'), +event.toElement.parentElement.getAttribute('data-number'))
+                    $('.place').eq(index).addClass('no_sort')
+                    console.log($('.place').eq(index))
+                    document.querySelector('.right-box').children[index].append(oldPuzzl)
+
+                }
+                event.target.classList.remove('no_sort')
+                event.toElement.parentElement.classList.add('no_sort')
             }
-            event.target.classList.remove('no_sort')
-            event.toElement.parentElement.classList.add('no_sort')
-        }
-    })
+        })
     }
 
     function showPuzzl(arr) {
@@ -200,7 +245,7 @@ $(document).ready(function () {
     }
 
     function shuffle(array) {
-       return array.sort(() => Math.random() - 0.5);
+        return array.sort(() => Math.random() - 0.5);
     }
 
     function generPlace() {
